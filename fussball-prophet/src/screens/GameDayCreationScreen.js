@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, Button, Picker} from 'react-native';
 import {styles} from '../styles/GeneralStyles'
+import GameComponent from '../ui-components/GameComponent'
 
 export default class GameDayCreationScreen extends React.Component{
   static navigationOptions = {
@@ -26,6 +27,7 @@ export default class GameDayCreationScreen extends React.Component{
           selectedGameday={this.state.selectedGameday}
           onChange={(itemVal, itemIdx) => this.handlePickerChange(itemVal, itemIdx)}
         />
+        <GameComponent/>
       </View>
     );
   }
