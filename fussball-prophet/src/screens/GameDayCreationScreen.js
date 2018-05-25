@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, Button, Picker} from 'react-native';
+import {Text,ScrollView, View, Button, Picker} from 'react-native';
 import {styles} from '../styles/GeneralStyles'
 import GameComponent from '../ui-components/GameComponent'
 
@@ -17,8 +17,15 @@ export default class GameDayCreationScreen extends React.Component{
 
   handlePickerChange = (itemValue, itemIndex) => {
     this.setState({selectedGameday: itemValue});
-    console.log("Item: " + itemValue + " an der Stelle " + itemIndex);
   };
+
+  renderGameComponents() {
+    let gameComps = [];
+    for(i=1; i <= 9; i++){
+      gameComps.push(<GameComponent key={i} number={i} scoreIsVisible="false"/>);
+    }
+    return gameComps;
+  }
 
   render(){
     return (
@@ -27,7 +34,11 @@ export default class GameDayCreationScreen extends React.Component{
           selectedGameday={this.state.selectedGameday}
           onChange={(itemVal, itemIdx) => this.handlePickerChange(itemVal, itemIdx)}
         />
-        <GameComponent/>
+        <ScrollView horizontal>
+          <ScrollView>
+            {this.renderGameComponents()}
+          </ScrollView>
+        </ScrollView>
       </View>
     );
   }

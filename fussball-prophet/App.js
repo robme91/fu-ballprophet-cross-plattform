@@ -4,7 +4,6 @@ import { createStackNavigator } from 'react-navigation';
 import GameDayCreationScreen from './src/screens/GameDayCreationScreen'
 import HomeScreen from './src/screens/HomeScreen'
 
-
 const RootStack = createStackNavigator(
   {
     Home: HomeScreen,

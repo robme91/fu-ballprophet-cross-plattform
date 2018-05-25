@@ -11,7 +11,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    height: 50
+  },
+  userInputs: {
+    fontSize: 18,
+    minWidth: 100,
+    minHeight: 50
   }
 });
 
