@@ -22,12 +22,15 @@ export default class GameComponent extends Component {
     return (
       <View style={styles.game}>
         <Text>{this.state.number + '. '}</Text>
+        {/*Home team text input */}
         <TextInput
           style={styles.userInputs}
           onChangeText={(text) => this.setState({homeTeam: text})}
           value={this.state.homeTeam}
         />
+      {/*Wenn returntype (returnKeyType="next") doch noch auf weiter gehen soll, dann mach das hier https://medium.com/reactnative/tabbing-through-input-fields-ef283f923ab1*/}
         <Text style={{fontWeight: 'bold'}}> : </Text>
+        {/*away team text input*/}
         <TextInput
           style={styles.userInputs}
           onChangeText={(text) => this.setState({awayTeam: text})}
@@ -41,6 +44,7 @@ export default class GameComponent extends Component {
 
 
 class ScoreComponent extends Component{
+  //TODO hier fehlen noch die onChangeText methoden in den inputs, so dass die scores in den state geschrieben werden.
   render() {
     return (
       <View style={styles.game}>

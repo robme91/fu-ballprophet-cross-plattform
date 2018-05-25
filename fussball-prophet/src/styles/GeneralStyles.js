@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     height: 50
   },
   userInputs: {
-    fontSize: 18,
+    fontSize: 16,
     minWidth: 100,
     minHeight: 50
   }
