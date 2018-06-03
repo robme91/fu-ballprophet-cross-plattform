@@ -13,7 +13,7 @@ export default class GameDayQuestion extends Component {
   }
 
   render(){
-    const input = <TextInput style={styles.userInputs} />;
+    const input = <TextInput multiline={true} style={styles.questionInput} />;
     const text = <Text>{this.state.question}</Text>
     const question = this.state.questionInCreation ? input : text;
     return(

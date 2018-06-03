@@ -18,6 +18,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     minWidth: 100,
     minHeight: 50
+  },
+  questionInput: {
+    fontSize: 14,
+    minWidth: 200,
+    minHeight: 50
   }
 });
 

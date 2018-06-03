@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text,ScrollView, View, Button, Picker} from 'react-native';
+import {Text,ScrollView, View, Button, Picker, KeyboardAvoidingView} from 'react-native';
 import {styles} from '../styles/GeneralStyles'
 import GameComponent from '../ui-components/GameComponent'
 import GameDayQuestion from '../ui-components/GameDayQuestion'
@@ -30,19 +30,21 @@ export default class GameDayCreationScreen extends React.Component{
 
   render(){
     return (
-      <View style={styles.container}>
+      <KeyboardAvoidingView  style={styles.container} behavior="padding">
         <GameDayPicker
           selectedGameday={this.state.selectedGameday}
           onChange={(itemVal, itemIdx) => this.handlePickerChange(itemVal, itemIdx)}
         />
-        <GameDayQuestion/>
-        <ScrollView horizontal>
+
+      <ScrollView style={{flex:1}} horizontal>
           <ScrollView>
             {this.renderGameComponents()}
           </ScrollView>
         </ScrollView>
-
-      </View>
+        <GameDayQuestion questionInCreation={true} style={{flex:2}}/>
+          {/*This view must be here because of those sucking keyboard problems on android*/}
+        <View style={{ height: 60 }} />
+      </KeyboardAvoidingView >
     );
   }
 }
