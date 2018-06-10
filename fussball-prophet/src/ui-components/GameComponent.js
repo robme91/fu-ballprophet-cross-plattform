@@ -1,40 +1,35 @@
 import React, { Component } from 'react';
 import {TextInput, View, Text} from 'react-native';
-import {styles} from '../styles/GeneralStyles'
+import {styles} from '../styles/GeneralStyles';
+import Game from '../entities/GameClass';
 
 export default class GameComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      number: props.number,           // every gameday has 9 games, so each game gets a unique number per gameday between 1 and 9
-      homeTeam: null,
-      awayTeam: null,
-      score: {
-        homeScore: null,
-        awayScore: null
-      },
       scoreIsVisible: false
     };
   }
 
   render() {
     const scoreComp = this.state.scoreIsVisible ? <ScoreComponent/> : null;
+    const gameNumber = this.props.game.number;
     return (
       <View style={styles.game}>
-        <Text>{this.state.number + '. '}</Text>
+        <Text>{gameNumber + '. '}</Text>
         {/*Home team text input */}
         <TextInput
           style={styles.userInputs}
-          onChangeText={(text) => this.setState({homeTeam: text})}
-          value={this.state.homeTeam}
+          onChangeText={(text) => this.props.onUpdateHomeTeam(text, gameNumber)}
+          value={this.props.game.homeTeam}
         />
       {/*Wenn returntype (returnKeyType="next") doch noch auf weiter gehen soll, dann mach das hier https://medium.com/reactnative/tabbing-through-input-fields-ef283f923ab1*/}
         <Text style={{fontWeight: 'bold'}}> : </Text>
         {/*away team text input*/}
         <TextInput
           style={styles.userInputs}
-          onChangeText={(text) => this.setState({awayTeam: text})}
-          value={this.state.awayTeam}
+          onChangeText={(text) => this.props.onUpdateAwayTeam(text, gameNumber)}
+          value={this.props.game.awayTeam}
         />
         {scoreComp}
       </View>
