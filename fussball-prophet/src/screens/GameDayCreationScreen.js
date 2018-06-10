@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text,ScrollView, View, Button, Picker, KeyboardAvoidingView} from 'react-native';
+import {Text,ScrollView, View, Button, Picker, KeyboardAvoidingView, Clipboard, Alert} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 import GameComponent from '../ui-components/GameComponent';
 import GameDayQuestion from '../ui-components/GameDayQuestion';
@@ -70,7 +70,11 @@ export default class GameDayCreationScreen extends React.Component{
   };
 
   _fetchGameDayData = () => {
-    alert(this.state.selectedGameday + ", " + this.state.gameDayQuestion + ", " + this.state.games[0].homeTeam);
+    let formGameDayNumber = 'Spieltag Nr. ' + this.state.selectedGameday + '\n\n';
+    let formGames = this.state.games[0].homeTeam + ' - ' +  this.state.games[0].awayTeam + '\n\n';
+    let formQuestion = 'Spieltagsfrage: \n' + this.state.gameDayQuestion;
+    Clipboard.setString(formGameDayNumber + formGames+ formQuestion);
+    Alert.alert("Copied to Clipboard", "Spieltag in der Zwischenablage kopiert");
   };
 
   handlePickerChange = (itemValue, itemIndex) => {
