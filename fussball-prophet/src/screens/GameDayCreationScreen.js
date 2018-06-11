@@ -71,11 +71,23 @@ export default class GameDayCreationScreen extends React.Component{
 
   _fetchGameDayData = () => {
     let formGameDayNumber = 'Spieltag Nr. ' + this.state.selectedGameday + '\n\n';
-    let formGames = this.state.games[0].homeTeam + ' - ' +  this.state.games[0].awayTeam + '\n\n';
+    let formGames = this.formatGames();
     let formQuestion = 'Spieltagsfrage: \n' + this.state.gameDayQuestion;
-    Clipboard.setString(formGameDayNumber + formGames+ formQuestion);
+    Clipboard.setString(formGameDayNumber + formGames + formQuestion);
     Alert.alert("Copied to Clipboard", "Spieltag in der Zwischenablage kopiert");
   };
+
+  formatGames = () => {
+    let gamesString = '';
+    let gamesArr = this.state.games;
+    for(i=0; i <= gamesArr.length - 1; i++){
+      let game = gamesArr[i];
+      let homeTeam = game.homeTeam ? game.homeTeam : "Team fehlt";
+      let awayTeam = game.awayTeam ? game.awayTeam : "Team fehlt";
+      gamesString += homeTeam + ' - ' + awayTeam + '\n';
+    }
+    return gamesString + '\n';
+  }
 
   handlePickerChange = (itemValue, itemIndex) => {
     this.setState({selectedGameday: itemValue});
