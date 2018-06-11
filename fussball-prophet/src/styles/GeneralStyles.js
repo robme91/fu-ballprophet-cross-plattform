@@ -23,6 +23,12 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     minWidth: 200,
     minHeight: 50
+  },
+  gameDayPickerContainer: {
+    flex: 0.5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   }
 });
 

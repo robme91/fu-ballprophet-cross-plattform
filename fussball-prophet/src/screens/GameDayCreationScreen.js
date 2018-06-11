@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text,ScrollView, View, Button, Picker, KeyboardAvoidingView, Clipboard, Alert} from 'react-native';
+import {Text, TextInput, ScrollView, View, Button, Picker, KeyboardAvoidingView, Clipboard, Alert} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 import GameComponent from '../ui-components/GameComponent';
 import GameDayQuestion from '../ui-components/GameDayQuestion';
@@ -23,6 +23,7 @@ export default class GameDayCreationScreen extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      selectedSeason: this.initSeason(),
       selectedGameday: 1,
       games: this.initGames(),
       gameDayQuestion: ''
@@ -37,6 +38,20 @@ export default class GameDayCreationScreen extends React.Component{
       gamesArr.push(new Game(i));
     }
     return gamesArr;
+  }
+
+  /* Initialises the season with the current year or the year before.
+   The season year for an openLigaDb call is in a season 2018/19 --> 2018.
+   Thats why i check here which month we got. Between July and December,
+   the default season is the current year. Between January and June, the default
+   season is the current year - 1.
+   */
+  initSeason = () =>{
+    let currentDate = new Date();
+    if(currentDate.getMonth() > 5){
+      return currentDate.getFullYear().toString();
+    }
+    return (currentDate.getFullYear() - 1).toString();
   }
 
   renderGameComponents() {
@@ -93,8 +108,39 @@ export default class GameDayCreationScreen extends React.Component{
     this.setState({selectedGameday: itemValue});
   };
 
+  handleOnSeasonChange = (text) => {
+    this.setState({selectedSeason: text});
+  };
+
   handleQuestionChangeText = (newText) => {
     this.setState({gameDayQuestion: newText});
+  };
+
+  handleLoadingGames = () => {
+    console.log("Start laoding games");
+     //TODO while loading, make a react native loading ActivityIndicator here
+     const basisURL = 'https://www.openligadb.de/api/getmatchdata/bl1/';
+     const season = this.state.selectedSeason + '/';
+     const gameDayNumber = this.state.selectedGameday;
+     fetch(basisURL + season + gameDayNumber)
+     .then((response) => response.json())
+     .then((responseJson) => {
+       let loadedGames = responseJson.map((game, index) => {
+         let convertedGame = new Game(index + 1);
+         convertedGame.homeTeam = game.Team1.TeamName;
+         convertedGame.awayTeam = game.Team2.TeamName;
+         return convertedGame;
+       });
+       if(loadedGames.length > 0){
+         this.setState({games: loadedGames});
+       }else{
+         Alert.alert("Keine Daten", "Es konnten keine Spiele zum angegebenen Spieltag gefunden werden. Prüfen ob Spieltagsnummer und Jahreszahl stimmen.");
+       }
+     })
+     .catch((error) => {
+       console.error(error);
+       Alert.alert("Fehler", "Spiele konnten nicht geladen werden. Entweder manuell oder später nochmal probieren.");
+     });
   };
 
   render(){
@@ -103,6 +149,12 @@ export default class GameDayCreationScreen extends React.Component{
         <GameDayPicker
           selectedGameday={this.state.selectedGameday}
           onChange={(itemVal, itemIdx) => this.handlePickerChange(itemVal, itemIdx)}
+          season={this.state.selectedSeason}
+          onChangeText={(text) => this.handleOnSeasonChange(text)}
+        />
+        <Button
+          title="Lade Spiele"
+          onPress={() => this.handleLoadingGames()}
         />
         <ScrollView style={{flex:1}} horizontal>
           <ScrollView>
@@ -135,13 +187,22 @@ class GameDayPicker extends React.Component{
 
   render(){
     return (
-      <Picker
-        selectedValue={this.props.selectedGameday}
-        style={{ height: 50, width: 150}}
-        onValueChange={(itemValue, itemIndex) => this.props.onChange(itemValue, itemIndex)}
-      >
-        {this.renderPickerItem()}
-      </Picker>
+      <View style={styles.gameDayPickerContainer}>
+        <Picker
+          selectedValue={this.props.selectedGameday}
+          style={{ height: 50, width: 150}}
+          onValueChange={(itemValue, itemIndex) => this.props.onChange(itemValue, itemIndex)}
+        >
+          {this.renderPickerItem()}
+        </Picker>
+        <TextInput
+          onChangeText={(text) => this.props.onChangeText(text)}
+          value={this.props.season}
+          maxLength={4}
+          keyboardType='numeric'
+          style={{width: 50, height: 40}}
+        />
+      </View>
     );
   }
 }
