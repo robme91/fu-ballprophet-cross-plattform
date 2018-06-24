@@ -16,6 +16,12 @@ export default class HomeScreen extends React.Component{
             title="Neuer Spieltag"
             accessibilityLabel="Erstelle einen neuen Spieltag"
         />
+      <View style={{ height: 20 }} />
+        <Button
+            onPress={() => this.props.navigation.navigate('PerformanceTest')}
+            title="Perfomance Test"
+            accessibilityLabel="Gehe zu Performance Test Seite"
+        />
       </View>
     );
   }
