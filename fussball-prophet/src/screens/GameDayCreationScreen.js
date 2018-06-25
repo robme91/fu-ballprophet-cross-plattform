@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TextInput, ScrollView, View, Button, Picker, KeyboardAvoidingView, Clipboard, Alert} from 'react-native';
+import {Text, TextInput, ScrollView, View, Button, Picker, KeyboardAvoidingView, Clipboard, Alert, AsyncStorage} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 import GameComponent from '../ui-components/GameComponent';
 import GameDayQuestion from '../ui-components/GameDayQuestion';
@@ -32,6 +32,50 @@ export default class GameDayCreationScreen extends React.Component{
     /*react navigation doesn't have a good pattern for passing data between header and component. so this param must be set here. */
     this.props.navigation.setParams({fetchGameDayData: this._fetchGameDayData });
   }
+
+  //TODO also load data on didMount because, it can be also the first gameday that is needed
+  componentDidMount = () => {
+    this.loadSavedGameDay(this.state.selectedSeason + '_' + this.state.selectedGameday);
+  }
+
+  /*This method is a react lifecycle method that is called before a component is destroyed and unmounted
+    If there is a need to save data on close or putting app to background then follow these steps
+     https://stackoverflow.com/questions/38962034/how-to-detect-when-a-react-native-app-is-closed-not-suspended
+     There is described how to access the appState and put listeners to it.
+  */
+  componentWillUnmount = () => {
+    //currently saves data also when errors occurs and games are null or something like that, so reload for 1. gameday will bring just nulls
+    let gameDay = new GameDay(this.state.selectedGameday);
+    let gamesArr = this.state.games;
+    gameDay.games = gamesArr;
+    gameDay.question = this.state.gameDayQuestion;
+    let gameDayJson = JSON.stringify(gameDay);
+    let savingKey = this.state.selectedSeason + '_' + this.state.selectedGameday;
+    try {
+      AsyncStorage.setItem(savingKey, gameDayJson);
+      console.log("Saved GameDay: " + gameDayJson);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  loadSavedGameDay = (key) => {
+    try {
+      console.log("Get data key: " + key);
+      AsyncStorage.getItem(key).then((gameDayJson) => {
+        console.log(gameDayJson);
+        if (gameDayJson !== null){
+          const parsedGameDay = JSON.parse(gameDayJson);
+          this.setState({games: parsedGameDay.games});
+          console.log("Spieltagsfrage from database: " + parsedGameDay.question);
+          this.setState({gameDayQuestion: parsedGameDay.question});
+        }
+      }).done();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   initGames = () => {
     let gamesArr = [];
@@ -90,14 +134,6 @@ export default class GameDayCreationScreen extends React.Component{
     let formGames = this.formatGames();
     let formQuestion = 'Spieltagsfrage: \n' + this.state.gameDayQuestion;
     Clipboard.setString(formGameDayNumber + formGames + formQuestion);
-    let gameDay = new GameDay(this.state.selectedGameday);
-    let gamesArr = this.state.games;
-    gameDay.games = gamesArr;
-    gameDay.question = this.state.gameDayQuestion;
-    gameDayJson = JSON.stringify(gameDay);
-    console.log(gameDayJson);
-    parsedGameDay = JSON.parse(gameDayJson);
-    console.log("Frage: " + parsedGameDay.question);
     Alert.alert("Copied to Clipboard", "Spieltag in der Zwischenablage kopiert");
   };
 
@@ -115,10 +151,12 @@ export default class GameDayCreationScreen extends React.Component{
 
   handlePickerChange = (itemValue, itemIndex) => {
     this.setState({selectedGameday: itemValue});
+    this.loadSavedGameDay(this.state.selectedSeason + '_' + itemValue);
   };
 
   handleOnSeasonChange = (text) => {
     this.setState({selectedSeason: text});
+    this.loadSavedGameDay(text + '_' + this.state.selectedGameday);
   };
 
   handleQuestionChangeText = (newText) => {

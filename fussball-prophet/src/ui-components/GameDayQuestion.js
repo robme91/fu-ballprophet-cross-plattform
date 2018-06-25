@@ -14,8 +14,8 @@ export default class GameDayQuestion extends Component {
 
   render(){
     const input = <TextInput
-                    multiline={true}
-                    onChangeText={(newText) => this.props.onChangeText(newText)} 
+                    value={this.props.content}
+                    onChangeText={(newText) => this.props.onChangeText(newText)}
                     style={styles.questionInput}
                   />;
     const text = <Text>{this.state.question}</Text>
