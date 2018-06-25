@@ -4,6 +4,7 @@ import {styles} from '../styles/GeneralStyles';
 import GameComponent from '../ui-components/GameComponent';
 import GameDayQuestion from '../ui-components/GameDayQuestion';
 import Game from '../entities/GameClass';
+import GameDay from '../entities/GameDayClass';
 
 export default class GameDayCreationScreen extends React.Component{
   static navigationOptions = ({ navigation }) => {
@@ -89,6 +90,14 @@ export default class GameDayCreationScreen extends React.Component{
     let formGames = this.formatGames();
     let formQuestion = 'Spieltagsfrage: \n' + this.state.gameDayQuestion;
     Clipboard.setString(formGameDayNumber + formGames + formQuestion);
+    let gameDay = new GameDay(this.state.selectedGameday);
+    let gamesArr = this.state.games;
+    gameDay.games = gamesArr;
+    gameDay.question = this.state.gameDayQuestion;
+    gameDayJson = JSON.stringify(gameDay);
+    console.log(gameDayJson);
+    parsedGameDay = JSON.parse(gameDayJson);
+    console.log("Frage: " + parsedGameDay.question);
     Alert.alert("Copied to Clipboard", "Spieltag in der Zwischenablage kopiert");
   };
 
