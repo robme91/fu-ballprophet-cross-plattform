@@ -12,23 +12,36 @@ export default class PerformanceTestScreen extends React.Component{
     };
   };
 
+  constructor(props){
+    super(props);
+    this.state = {
+      measurements: [],
+    }
+  }
 
-  /*Measure performance https://developer.mozilla.org/en-US/docs/Web/API/Performance/now*/
   getTimeForRequest = (reqUrl) => {
-    const present = require('present');
     let t0 = Date.now();
-    fetch(reqUrl)
+    return fetch(reqUrl)
     .then((response) => {
       if (response.ok) {
-        console.log(response.json());
+        console.log("Response sucessfull");
       }
+    })
+    .then(() => {
+      let t1 = Date.now()
+      console.log("t0=" + t0 + "; t1=" + t1);
+      this.addMeasureResult(t1-t0);
     })
     .catch((error) => {
       console.error("Error when perform request: " + error);
     });
-    t1 = Date.now()
-    console.log("t0=" + t0 + "; t1=" + t1);
-    return t1-t0;
+  }
+
+  addMeasureResult = (deltaT) =>{
+    let updatedArr = this.state.measurements;
+    updatedArr.push(deltaT);
+    this.setState({measurements: updatedArr});
+    console.log("Call to API took " + deltaT + " milliseconds.");
   }
 
 
@@ -37,11 +50,14 @@ export default class PerformanceTestScreen extends React.Component{
     const apiEndpoint ="2017/32";
     const requestNumber = 20;
     console.log("Start sending requests to API with Parameters: ApiEndpoint=" + apiEndpoint +"; Number of Requests=" + requestNumber);
-    deltaT = this.getTimeForRequest(baseURL + apiEndpoint);
-    console.log("Call to API took" + deltaT + " milliseconds.");
-    // for(i=0; i <= requestNumber; i++){
-    //
-    // }
+    let promises = [];
+    for(i=0; i <= requestNumber; i++){
+      reqPromise = this.getTimeForRequest(baseURL + apiEndpoint);
+      promises.push(reqPromise);
+    }
+    Promise.all(promises).then(()=>{
+      Alert.alert("Test abgeschlossen", "Alle Werte im State gespeichert.");
+    });
   }
 
   render(){
