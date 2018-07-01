@@ -21,6 +21,8 @@ export default class GameDayCreationScreen extends React.Component{
     };
   };
 
+//TODO fields wont be empty when they are filled and gameday is changed
+
   constructor(props){
     super(props);
     this.state = {
