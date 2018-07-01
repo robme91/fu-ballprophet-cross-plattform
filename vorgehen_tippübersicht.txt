@@ -1,0 +1,20 @@
+* Bei Spieltagserstellung muss der Spieltag iwie auf dem handy gespeichert werden, damit von der anderen view darauf zugegriffen werden kann.
+* Liste
+* Button für "Spieler tipps hinzufügen"
+* Dialog/view öffnen:
+    ** Name des Spielers
+    ** Nur die spiele + tipps einfügen, dabei ist die Reihenfolge entscheidend(pro Zeile ein Tipp)
+    ** Spieltagsantwort kopieren und einfügen
+* Pro Spieler tipp wird dann die eingabe gespeichert
+* Export Button:
+    ** Es wird eine Spielübersicht (am besten die vom Ersteller/aus der Spieltagserstellung) benutzt
+    ** Alle Spieler tipps werden geparsed 
+    ** es wird die erste begegnung genommen
+    ** von jedem Spieler wird immer der name + der tipps zum ersten spiel genommen und unter die erste Begegnung gehängt
+    ** so durch alle Begegnungen durchgehen
+    ** Am Ende spieltagsfrage und wieder immer name + antwort hinschreiben
+
+    
+TODO Spieltag speichern:
+* https://facebook.github.io/react-native/docs/asyncstorage.html
+* https://www.thepolyglotdeveloper.com/2015/09/saving-data-in-your-react-native-mobile-application/

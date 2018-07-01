@@ -33,7 +33,6 @@ export default class GameDayCreationScreen extends React.Component{
     this.props.navigation.setParams({fetchGameDayData: this._fetchGameDayData });
   }
 
-  //TODO also load data on didMount because, it can be also the first gameday that is needed
   componentDidMount = () => {
     this.loadSavedGameDay(this.state.selectedSeason + '_' + this.state.selectedGameday);
   }
