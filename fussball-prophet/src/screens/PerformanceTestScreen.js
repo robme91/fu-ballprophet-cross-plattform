@@ -43,10 +43,9 @@ export default class PerformanceTestScreen extends React.Component{
   }
 
 
-  handleMultipleRequests = () => {
+  handleMultipleRequests = (apiEndpoint) => {
     this.setState({loading: true}); // start activity loader
-    const baseURL="https://www.openligadb.de/api/getmatchdata/bl1/";
-    const apiEndpoint ="2017/32";
+    const baseURL="https://www.openligadb.de/api/";
     const requestNumber = 50;
     let series = new MeasuredSeries();
     series.apiEndpoint = apiEndpoint;
@@ -82,10 +81,30 @@ export default class PerformanceTestScreen extends React.Component{
           loading={this.state.loading}
         />
         <Button
-          title="Starte Mehrfachabfrage"
-          onPress={() => this.handleMultipleRequests()}
+          title="Test spez. Spieltag"
+          onPress={() => this.handleMultipleRequests("getmatchdata/bl1/2017/13")}
         />
         <View style={{ height: 20 }} />
+        <Button
+          title="Test letzter Spieltag"
+          onPress={() => this.handleMultipleRequests("getmatchdata/bl1")}
+        />
+        <View style={{ height: 20 }} />
+        <Button
+          title="Test alle Spiele"
+          onPress={() => this.handleMultipleRequests("getmatchdata/bl1/2016")}
+        />
+        <View style={{ height: 20 }} />
+        <Button
+          title="Test alle Teams"
+          onPress={() => this.handleMultipleRequests("getavailableteams/bl1/2017")}
+        />
+        <View style={{ height: 20 }} />
+        <Button
+          title="Test Tabelle"
+          onPress={() => this.handleMultipleRequests("getbltable/bl1/2017")}
+        />
+        <View style={{ height: 60 }} />
         <Button
           title="Exportiere Messergebnisse"
           onPress={() => this.copyMeasurementsToClipboard()}
