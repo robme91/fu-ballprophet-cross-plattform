@@ -1,6 +1,7 @@
 import React from 'react';
 import {Text, View, Button, Alert} from 'react-native';
 import {styles} from '../styles/GeneralStyles'
+import Loader from '../ui-components/Loader';
 
 export default class PerformanceTestScreen extends React.Component{
 
@@ -16,6 +17,7 @@ export default class PerformanceTestScreen extends React.Component{
     super(props);
     this.state = {
       measurements: [],
+      loading: false,
     }
   }
 
@@ -46,6 +48,7 @@ export default class PerformanceTestScreen extends React.Component{
 
 
   handleMultipleRequests = () => {
+    this.setState({loading: true}); // start activity loader
     const baseURL="https://www.openligadb.de/api/getmatchdata/bl1/";
     const apiEndpoint ="2017/32";
     const requestNumber = 20;
@@ -56,6 +59,7 @@ export default class PerformanceTestScreen extends React.Component{
       promises.push(reqPromise);
     }
     Promise.all(promises).then(()=>{
+      this.setState({loading: false});
       Alert.alert("Test abgeschlossen", "Alle Werte im State gespeichert.");
     });
   }
@@ -63,6 +67,9 @@ export default class PerformanceTestScreen extends React.Component{
   render(){
     return (
       <View style={styles.container}>
+        <Loader
+          loading={this.state.loading}
+        />
         <Button
           title="Starte Mehrfachabfrage"
           onPress={() => this.handleMultipleRequests()}

@@ -166,7 +166,7 @@ export default class GameDayCreationScreen extends React.Component{
 
   handleLoadingGames = () => {
     console.log("Start laoding games");
-     //TODO while loading, make a react native loading ActivityIndicator here
+     //TODO import loader and start it here
      const basisURL = 'https://www.openligadb.de/api/getmatchdata/bl1/';
      const season = this.state.selectedSeason + '/';
      const gameDayNumber = this.state.selectedGameday;
