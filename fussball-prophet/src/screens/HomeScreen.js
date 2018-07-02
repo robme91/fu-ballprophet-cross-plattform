@@ -1,6 +1,6 @@
 import React from 'react';
 import {Text, View, Button, Alert} from 'react-native';
-import {styles} from '../styles/GeneralStyles'
+import {styles} from '../styles/GeneralStyles';
 
 export default class HomeScreen extends React.Component{
 
@@ -16,7 +16,13 @@ export default class HomeScreen extends React.Component{
             title="Neuer Spieltag"
             accessibilityLabel="Erstelle einen neuen Spieltag"
         />
-      <View style={{ height: 20 }} />
+        <View style={{ height: 20 }} />
+        <Button
+            onPress={() => this.props.navigation.navigate('ManageTips')}
+            title="Manage Spieler Tipps"
+            accessibilityLabel="Manage Spieler Tipps"
+        />
+        <View style={{ height: 20 }} />
         <Button
             onPress={() => this.props.navigation.navigate('PerformanceTest')}
             title="Perfomance Test"

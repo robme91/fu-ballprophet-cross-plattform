@@ -1,4 +1,3 @@
-* Bei Spieltagserstellung muss der Spieltag iwie auf dem handy gespeichert werden, damit von der anderen view darauf zugegriffen werden kann.
 * Liste
 * Button für "Spieler tipps hinzufügen"
 * Dialog/view öffnen:
