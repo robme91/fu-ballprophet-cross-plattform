@@ -5,6 +5,7 @@ import GameComponent from '../ui-components/GameComponent';
 import GameDayQuestion from '../ui-components/GameDayQuestion';
 import Game from '../entities/GameClass';
 import GameDay from '../entities/GameDayClass';
+import GameDayPicker from '../ui-components/GameDayPicker'
 
 export default class GameDayCreationScreen extends React.Component{
   static navigationOptions = ({ navigation }) => {
@@ -54,7 +55,6 @@ export default class GameDayCreationScreen extends React.Component{
     let savingKey = this.state.selectedSeason + '_' + this.state.selectedGameday;
     try {
       AsyncStorage.setItem(savingKey, gameDayJson);
-      console.log("Saved GameDay: " + gameDayJson);
     } catch (error) {
       console.log(error);
     }
@@ -218,39 +218,6 @@ export default class GameDayCreationScreen extends React.Component{
           {/*This view must be here because of those sucking keyboard problems on android*/}
         <View style={{ height: 60 }} />
       </KeyboardAvoidingView >
-    );
-  }
-}
-
-/*This component is a picker for the 34 game days*/
-class GameDayPicker extends React.Component{
-
-  renderPickerItem(){
-    let gameDays = [];
-    for(i=1; i < 35; i++){
-      gameDays.push(<Picker.Item key={i} label={i + ". Spieltag"} value={i} />);
-    }
-    return gameDays;
-  }
-
-  render(){
-    return (
-      <View style={styles.gameDayPickerContainer}>
-        <Picker
-          selectedValue={this.props.selectedGameday}
-          style={{ height: 50, width: 150}}
-          onValueChange={(itemValue, itemIndex) => this.props.onChange(itemValue, itemIndex)}
-        >
-          {this.renderPickerItem()}
-        </Picker>
-        <TextInput
-          onChangeText={(text) => this.props.onChangeText(text)}
-          value={this.props.season}
-          maxLength={4}
-          keyboardType='numeric'
-          style={{width: 50, height: 40}}
-        />
-      </View>
     );
   }
 }

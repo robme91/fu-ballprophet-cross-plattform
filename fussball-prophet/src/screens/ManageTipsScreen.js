@@ -17,11 +17,12 @@ import React from 'react';
 import {Text, View, Button, Alert} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 import TipTicketModal from '../ui-components/TipTicketModal';
+import GameDayPicker from '../ui-components/GameDayPicker'
 
 export default class ManageTipsScreen extends React.Component{
 
   static navigationOptions = {
-    title: 'Tipp Übersicht',
+    title: 'Tipp Verwaltung',
   };
 
   constructor(props){
@@ -29,35 +30,64 @@ export default class ManageTipsScreen extends React.Component{
     this.state = {
       measurements: [],
       isOpen: false,
+      selectedGameday: 1,
+      selectedSeason: this.initSeason(),
     }
   }
 
+  /* Initialises the season with the current year or the year before.
+   The season year for an openLigaDb call is in a season 2018/19 --> 2018.
+   Thats why i check here which month we got. Between July and December,
+   the default season is the current year. Between January and June, the default
+   season is the current year - 1.
+   */
+  initSeason = () =>{
+    let currentDate = new Date();
+    if(currentDate.getMonth() > 5){
+      return currentDate.getFullYear().toString();
+    }
+    return (currentDate.getFullYear() - 1).toString();
+  }
+
+  handlePickerChange = (itemValue, itemIndex) => {
+    this.setState({selectedGameday: itemValue});
+  };
+
+  handleOnSeasonChange = (text) => {
+    this.setState({selectedSeason: text});
+  };
+
   handleOnShowModal = () => {
-    console.log("Modal offen");
+    //console.log("Modal offen");
   }
 
   handleOnCloseModal = () => {
-    this.setState({isOpen: false});
-    console.log("Modal closed");
+    //console.log("Modal closed");
   }
 
-  openModal = () => {
-    //this.setState({isOpen: true});
-    //TODO fix errors
+  openModal = (isVisible) => {
+    this.setState({isOpen: isVisible});
   }
 
   render(){
     return(
       <View style={styles.container}>
+        <GameDayPicker
+          selectedGameday={this.state.selectedGameday}
+          onChange={(itemVal, itemIdx) => this.handlePickerChange(itemVal, itemIdx)}
+          season={this.state.selectedSeason}
+          onChangeText={(text) => this.handleOnSeasonChange(text)}
+        />
         <TipTicketModal
           onModalShow={() => this.handleOnShowModal()}
           onModalClose={() => this.handleOnCloseModal()}
           isOpen={this.state.isOpen}
+          closeModal = {() => this.openModal(false)}
           />
-          <Button
-            title="Open Modal"
-            onPress={() => this.openModal()}
-            />
+        <Button
+          title="Open Modal"
+          onPress={() => this.openModal(true)}
+          />
       </View>
     );
   }

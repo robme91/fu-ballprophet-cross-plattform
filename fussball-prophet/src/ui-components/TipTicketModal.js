@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {TextInput, View, Text, Modal} from 'react-native';
+import {TextInput, View, Modal, Button} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 
 export default class TipTicketModal extends Component {
@@ -9,9 +9,9 @@ export default class TipTicketModal extends Component {
     this.state = {
       player: null,
       tips: null,
-      answer: null
+      answer: null,
     };
-    this.initState(props);
+   this.initState(props);
   }
 
 //TODO check if this method is needed or if e.g. palyer = props.player in constructor is also possible and if props is empty, it is just not filled
@@ -27,20 +27,27 @@ export default class TipTicketModal extends Component {
     }
   }
 
+
   render (){
     return (
       <Modal
         transparent={false}
         animationType={'none'}
-        visible={this.props.isOpen}>
+        visible={this.props.isOpen}
         onShow={() => this.props.onModalShow()}
         onRequestClose={() => this.props.onModalClose()}
-        <View style={styles.modalBackground}>
-          <TextInput
-            style={styles.userInputs}
-            onChangeText={(changedText) => {this.setState({player: changedText})}}
-            value={this.state.player}/>
-        </View>
+        >
+          <View style={styles.modalBackground}>
+            <TextInput
+              style={styles.userInputs}
+              onChangeText={(changedText) => {this.setState({player: changedText})}}
+              value={this.state.player}
+              />
+            <Button
+              title="Close Modal"
+              onPress={() => this.props.closeModal()}
+              />
+          </View>
       </Modal>
     );
   }
