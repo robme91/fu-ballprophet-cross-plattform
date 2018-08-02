@@ -14,7 +14,7 @@ TODO screen, der
 */
 
 import React from 'react';
-import {Text, View, Button, Alert, FlatList, AsyncStorage} from 'react-native';
+import {Text, View, Button, Alert, FlatList, AsyncStorage, Clipboard} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 import TipTicketModal from '../ui-components/TipTicketModal';
 import GameDayPicker from '../ui-components/GameDayPicker'
@@ -22,9 +22,19 @@ import TipTicket from '../entities/TipTicket'
 
 export default class ManageTipsScreen extends React.Component{
 
-  static navigationOptions = {
-    title: 'Tipp Verwaltung',
+  static navigationOptions = ({ navigation }) => {
+    const params = navigation.state.params || {};
+    return {
+      title: 'Tipp Verwaltung',
+      headerRight: (
+        <Button
+          onPress={params.exportTipTickets}
+          title="Export"
+         />
+      )
+    };
   };
+
 
   constructor(props){
     super(props);
@@ -35,6 +45,7 @@ export default class ManageTipsScreen extends React.Component{
       tipTickets: [],
       chosenListItem: null,
     }
+    this.props.navigation.setParams({exportTipTickets: this.exportTipTickets});
   }
 
   /* Initialises the season with the current year or the year before.
@@ -83,6 +94,51 @@ export default class ManageTipsScreen extends React.Component{
     } catch (error) {
       console.log(error);
     }
+  }
+
+  exportTipTickets = () =>{
+    // let gameDayNumber = 'Tipps zum ' + this.state.selectedGameday + '. Spieltag \n';
+    // let gameTips = this.parseGameTips() + '\n';
+    // let answers = this.parseAnswers();
+    // Clipboard.setString(gameDayNumber + gameTips + answers);
+    Alert.alert("Copied to Clipboard", "Tippscheine in die Zwischenablage kopiert");
+  }
+
+  parseGameTips = () =>{
+    const tipTickets = this.state.tipTickets;
+    let resultString = "";
+    for(i = 1; i < 10; i++){
+      let tipBlock = "";
+      //parse game ident
+      tipBlock += this.getGameIdent(i, tipTickets);
+      // gehe durch alle tickets und parse scroes zu game ident
+      // hänge an gesamt string
+      resultString += tipBlock;
+    }
+    return resultString;
+  }
+/*
+  this little loop always crushes expo and react native
+  getGameIdent = (gameNumber, tipTickets) =>{
+    let re = new RegExp("#" + gameNumber + "\\s.*#");
+    for(i=0; i < tipTickets.length; i++){
+      console.log("Länge: " + tipTickets.length);
+      let tips = tipTickets[i].tips;
+      if(tips){
+        let matchedRes = tips.match(re);
+        if(matchedRes){
+          let gameIdent = matchedRes[0]; //.slice(0,-1);
+          console.log(gameIdent);
+          //console.log(gameIdent.trim());
+          return gameIdent;
+        }
+      }
+    }
+    return -1;
+  }*/
+
+  parseAnswers = () => {
+    return "";
   }
 
   handlePickerChange = (itemValue, itemIndex) => {

@@ -133,7 +133,7 @@ export default class GameDayCreationScreen extends React.Component{
     let formGames = this.formatGames();
     let formQuestion = 'Spieltagsfrage: \n' + this.state.gameDayQuestion + '\n #QA <insert answer here> #' ;
     Clipboard.setString(formGameDayNumber + formGames + formQuestion);
-    Alert.alert("Copied to Clipboard", "Spieltag in der Zwischenablage kopiert");
+    Alert.alert("Copied to Clipboard", "Spieltag in die Zwischenablage kopiert");
   };
 
   formatGames = () => {
