@@ -14,7 +14,7 @@ TODO screen, der
 */
 
 import React from 'react';
-import {Text, View, Button, Alert, FlatList} from 'react-native';
+import {Text, View, Button, Alert, FlatList, AsyncStorage} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 import TipTicketModal from '../ui-components/TipTicketModal';
 import GameDayPicker from '../ui-components/GameDayPicker'
@@ -51,12 +51,48 @@ export default class ManageTipsScreen extends React.Component{
     return (currentDate.getFullYear() - 1).toString();
   }
 
+  componentWillUnmount = () => {
+    let tipTickets = this.state.tipTickets;
+    if(tipTickets.length > 0){
+      let jsonTickets = JSON.stringify(tipTickets);
+      let savingKey = 'tiptickets_' + this.state.selectedSeason + '_' + this.state.selectedGameday;
+      try {
+        console.log("Saved Tips: " + savingKey);
+        console.log(jsonTickets);
+        AsyncStorage.setItem(savingKey, jsonTickets);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  componentDidMount = () => {
+    this.loadSavedTipTickets('tiptickets_' + this.state.selectedSeason + '_' + this.state.selectedGameday);
+  }
+
+  loadSavedTipTickets = (key) => {
+    try {
+      console.log("Get data key: " + key);
+      AsyncStorage.getItem(key).then((tipTicketsJson) => {
+        console.log(tipTicketsJson);
+        if (tipTicketsJson !== null){
+          const parsedTickets = JSON.parse(tipTicketsJson);
+          this.setState({tipTickets: parsedTickets});
+        }
+      }).done();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   handlePickerChange = (itemValue, itemIndex) => {
     this.setState({selectedGameday: itemValue});
+    this.loadSavedTipTickets('tiptickets_' + this.state.selectedSeason + '_' + itemValue);
   };
 
   handleOnSeasonChange = (text) => {
     this.setState({selectedSeason: text});
+    this.loadSavedTipTickets('tiptickets_' + text + '_' + this.state.selectedGameday);
   };
 
   handleOnCloseModal = (playerName, tips) => {
@@ -83,7 +119,6 @@ export default class ManageTipsScreen extends React.Component{
 
   openModalWithValues = (clickedItem) =>{
     this.setState({chosenListItem: clickedItem});
-    console.log("clicked item: " + clickedItem.player);
     this.openModal(true);
   }
 

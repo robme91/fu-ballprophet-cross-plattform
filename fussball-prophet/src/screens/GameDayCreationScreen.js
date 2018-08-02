@@ -37,7 +37,7 @@ export default class GameDayCreationScreen extends React.Component{
   }
 
   componentDidMount = () => {
-    this.loadSavedGameDay(this.state.selectedSeason + '_' + this.state.selectedGameday);
+    this.loadSavedGameDay('gameday_' + this.state.selectedSeason + '_' + this.state.selectedGameday);
   }
 
   /*This method is a react lifecycle method that is called before a component is destroyed and unmounted
@@ -52,7 +52,7 @@ export default class GameDayCreationScreen extends React.Component{
     gameDay.games = gamesArr;
     gameDay.question = this.state.gameDayQuestion;
     let gameDayJson = JSON.stringify(gameDay);
-    let savingKey = this.state.selectedSeason + '_' + this.state.selectedGameday;
+    let savingKey = 'gameday_' + this.state.selectedSeason + '_' + this.state.selectedGameday;
     try {
       AsyncStorage.setItem(savingKey, gameDayJson);
     } catch (error) {
@@ -64,11 +64,9 @@ export default class GameDayCreationScreen extends React.Component{
     try {
       console.log("Get data key: " + key);
       AsyncStorage.getItem(key).then((gameDayJson) => {
-        console.log(gameDayJson);
         if (gameDayJson !== null){
           const parsedGameDay = JSON.parse(gameDayJson);
           this.setState({games: parsedGameDay.games});
-          console.log("Spieltagsfrage from database: " + parsedGameDay.question);
           this.setState({gameDayQuestion: parsedGameDay.question});
         }
       }).done();
@@ -133,7 +131,7 @@ export default class GameDayCreationScreen extends React.Component{
   _fetchGameDayData = () => {
     let formGameDayNumber = 'Spieltag Nr. ' + this.state.selectedGameday + '\n\n';
     let formGames = this.formatGames();
-    let formQuestion = 'Spieltagsfrage: \n' + this.state.gameDayQuestion;
+    let formQuestion = 'Spieltagsfrage: \n' + this.state.gameDayQuestion + '\n #QA <insert answer here> #' ;
     Clipboard.setString(formGameDayNumber + formGames + formQuestion);
     Alert.alert("Copied to Clipboard", "Spieltag in der Zwischenablage kopiert");
   };
@@ -145,19 +143,19 @@ export default class GameDayCreationScreen extends React.Component{
       let game = gamesArr[i];
       let homeTeam = game.homeTeam ? game.homeTeam : "Team fehlt";
       let awayTeam = game.awayTeam ? game.awayTeam : "Team fehlt";
-      gamesString += homeTeam + ' - ' + awayTeam + '\n';
+      gamesString += '#' + game.number + ' ' + homeTeam + ' - ' + awayTeam + ' #' + game.number + 'S  : ' + '\n';
     }
     return gamesString + '\n';
   }
 
   handlePickerChange = (itemValue, itemIndex) => {
     this.setState({selectedGameday: itemValue});
-    this.loadSavedGameDay(this.state.selectedSeason + '_' + itemValue);
+    this.loadSavedGameDay('gameday_' + this.state.selectedSeason + '_' + itemValue);
   };
 
   handleOnSeasonChange = (text) => {
     this.setState({selectedSeason: text});
-    this.loadSavedGameDay(text + '_' + this.state.selectedGameday);
+    this.loadSavedGameDay('gameday_' + text + '_' + this.state.selectedGameday);
   };
 
   handleQuestionChangeText = (newText) => {

@@ -24,7 +24,7 @@ export default class GameComponent extends Component {
           value={this.props.game.homeTeam}
         />
       {/*Wenn returntype (returnKeyType="next") doch noch auf weiter gehen soll, dann mach das hier https://medium.com/reactnative/tabbing-through-input-fields-ef283f923ab1*/}
-        <Text style={{fontWeight: 'bold'}}> : </Text>
+        <Text style={{fontWeight: 'bold'}}> - </Text>
         {/*away team text input*/}
         <TextInput
           style={styles.userInputs}
