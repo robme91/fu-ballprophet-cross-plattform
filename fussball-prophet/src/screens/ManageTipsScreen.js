@@ -14,10 +14,11 @@ TODO screen, der
 */
 
 import React from 'react';
-import {Text, View, Button, Alert} from 'react-native';
+import {Text, View, Button, Alert, FlatList} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 import TipTicketModal from '../ui-components/TipTicketModal';
 import GameDayPicker from '../ui-components/GameDayPicker'
+import TipTicket from '../entities/TipTicket'
 
 export default class ManageTipsScreen extends React.Component{
 
@@ -28,10 +29,11 @@ export default class ManageTipsScreen extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      measurements: [],
       isOpen: false,
       selectedGameday: 1,
       selectedSeason: this.initSeason(),
+      tipTickets: [],
+      chosenListItem: null,
     }
   }
 
@@ -57,16 +59,41 @@ export default class ManageTipsScreen extends React.Component{
     this.setState({selectedSeason: text});
   };
 
-  handleOnShowModal = () => {
-    //console.log("Modal offen");
-  }
-
-  handleOnCloseModal = () => {
-    //console.log("Modal closed");
+  handleOnCloseModal = (playerName, tips) => {
+    this.setState({chosenListItem: null});
+    this.openModal(false)
+    if(playerName != null){
+      tipTicket = new TipTicket(this.state.selectedGameday, this.state.selectedSeason, playerName, tips);
+      updatedTickets = this.state.tipTickets;
+      isIndex = updatedTickets.findIndex((element) => {
+          return element.player === playerName;
+      })
+      if(isIndex < 0){    // if there is no index, the element does nozt exist in list
+        updatedTickets.push(tipTicket);
+      }else{
+        updatedTickets[isIndex] = tipTicket;
+      }
+      this.setState({tipTickets: updatedTickets});
+    }
   }
 
   openModal = (isVisible) => {
     this.setState({isOpen: isVisible});
+  }
+
+  openModalWithValues = (clickedItem) =>{
+    this.setState({chosenListItem: clickedItem});
+    console.log("clicked item: " + clickedItem.player);
+    this.openModal(true);
+  }
+
+  handleLongPressOnItem = (clickedItem) =>{
+    updatedTickets = this.state.tipTickets;
+    let index = updatedTickets.indexOf(clickedItem);
+    if (index > -1) {
+      updatedTickets.splice(index, 1);
+      this.setState({tipTickets: updatedTickets});
+    }
   }
 
   render(){
@@ -79,15 +106,30 @@ export default class ManageTipsScreen extends React.Component{
           onChangeText={(text) => this.handleOnSeasonChange(text)}
         />
         <TipTicketModal
-          onModalShow={() => this.handleOnShowModal()}
-          onModalClose={() => this.handleOnCloseModal()}
+          onModalClose={(playerName, tips) => this.handleOnCloseModal(playerName, tips)}
           isOpen={this.state.isOpen}
-          closeModal = {() => this.openModal(false)}
+          chosenItem = {this.state.chosenListItem}
           />
         <Button
-          title="Open Modal"
+          title="Tippschein anlegen"
           onPress={() => this.openModal(true)}
           />
+        <View style={{ height: 30 }} />
+        <Text>Tippscheine</Text>
+        <FlatList
+          data = {this.state.tipTickets}
+          renderItem = {
+            ({item}) => <Text
+                onPress = {() => this.openModalWithValues(item)}
+                onLongPress = {() => this.handleLongPressOnItem(item)}
+                style={styles.listItem}>
+                {item.player}
+              </Text>
+          }
+          extraData={this.state}
+          keyExtractor={(item) => item.player}
+        />
+      <View style={{ height: 60 }} />
       </View>
     );
   }

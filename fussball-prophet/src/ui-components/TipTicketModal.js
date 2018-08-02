@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {TextInput, View, Modal, Button} from 'react-native';
+import {TextInput, View, Modal, Button, Text} from 'react-native';
 import {styles} from '../styles/GeneralStyles';
 
 export default class TipTicketModal extends Component {
@@ -9,24 +9,26 @@ export default class TipTicketModal extends Component {
     this.state = {
       player: null,
       tips: null,
-      answer: null,
     };
-   this.initState(props);
   }
 
-//TODO check if this method is needed or if e.g. palyer = props.player in constructor is also possible and if props is empty, it is just not filled
   initState = (props) => {
-    if(props.player){
-      this.setState({player: props.player});
-    }
-    if(props.tips){
-      this.setState({tips: props.tips});
-    }
-    if(props.answer){
-      this.setState({answer: props.answer});
+    if(props.chosenItem != null){
+      if(props.chosenItem.player != null){
+        this.setState({player: props.chosenItem.player});
+      }else{
+        this.setState({player: null});
+      }
+      if(props.chosenItem.tips != null){
+        this.setState({tips: props.chosenItem.tips});
+      }else{
+        this.setState({tips: null});
+      }
+    }else{
+      this.setState({player: null});
+      this.setState({tips: null});
     }
   }
-
 
   render (){
     return (
@@ -34,19 +36,30 @@ export default class TipTicketModal extends Component {
         transparent={false}
         animationType={'none'}
         visible={this.props.isOpen}
-        onShow={() => this.props.onModalShow()}
-        onRequestClose={() => this.props.onModalClose()}
+        onShow={() => this.initState(this.props)}
+        onRequestClose={() => this.props.onModalClose(this.state.player, this.state.tips)}
         >
           <View style={styles.modalBackground}>
+            <View style={styles.game}>
+              <Text>Prophet: </Text>
+              <TextInput
+                style={styles.questionInput}
+                onChangeText={(changedText) => {this.setState({player: changedText})}}
+                value={this.state.player}
+                />
+            </View>
+            <Text>Tippabgabe</Text>
             <TextInput
-              style={styles.userInputs}
-              onChangeText={(changedText) => {this.setState({player: changedText})}}
-              value={this.state.player}
+              style={styles.questionInput}
+              multiline = {true}
+              onChangeText={(changedText) => {this.setState({tips: changedText})}}
+              value={this.state.tips}
               />
             <Button
-              title="Close Modal"
-              onPress={() => this.props.closeModal()}
+              title="Tippschein schließen"
+              onPress={() => this.props.onModalClose(this.state.player, this.state.tips)}
               />
+            <View style={{ height: 60 }} />
           </View>
       </Modal>
     );

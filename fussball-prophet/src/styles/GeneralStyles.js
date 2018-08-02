@@ -19,6 +19,11 @@ export const styles = StyleSheet.create({
     minWidth: 100,
     minHeight: 50
   },
+  scoreInputs: {
+    fontSize: 16,
+    minWidth: 50,
+    minHeight: 50
+  },
   questionInput: {
     fontSize: 14,
     minWidth: 200,
@@ -45,5 +50,10 @@ export const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around'
+  },
+  listItem: {
+  padding: 10,
+  fontSize: 18,
+  height: 44,
   },
 });

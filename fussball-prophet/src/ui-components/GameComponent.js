@@ -12,7 +12,7 @@ export default class GameComponent extends Component {
   }
 
   render() {
-    const scoreComp = this.state.scoreIsVisible ? <ScoreComponent/> : null;
+    const scoreComp = this.state.scoreIsVisible ? <ScoreComponent /> : null;
     const gameNumber = this.props.game.number;
     return (
       <View style={styles.game}>
@@ -43,9 +43,11 @@ class ScoreComponent extends Component{
   render() {
     return (
       <View style={styles.game}>
-        <TextInput style={styles.userInputs}/>
+        <TextInput
+          style={styles.scoreInputs}
+          />
         <Text style={{fontWeight: 'bold'}}>:</Text>
-        <TextInput style={styles.userInputs}/>
+        <TextInput style={styles.scoreInputs}/>
       </View>
     );
   }
